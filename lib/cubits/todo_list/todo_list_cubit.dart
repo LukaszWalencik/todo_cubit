@@ -25,4 +25,15 @@ class TodoListCubit extends Cubit<TodoListState> {
     }).toList();
     emit(state.copyWith(todos: editTodo));
   }
+
+  void togleTodo(String id) {
+    final togleTodo = state.todos.map((Todo todo) {
+      if (todo.id == id) {
+        return Todo(
+            id: todo.id, description: todo.description, completed: true);
+      }
+      return todo;
+    }).toList();
+    emit(state.copyWith(todos: togleTodo));
+  }
 }
