@@ -1,10 +1,32 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'todo_list_cubit.dart';
 
-sealed class TodoListState extends Equatable {
-  const TodoListState();
+class TodoListState extends Equatable {
+  final List<Todo> todos;
+  TodoListState({
+    required this.todos,
+  });
+  factory TodoListState.initial() {
+    return TodoListState(
+      todos: [
+        Todo(id: '1', description: 'Wash the disches'),
+        Todo(id: '2', description: 'Learn Bloc'),
+        Todo(id: '3', description: 'Make awesome app'),
+      ],
+    );
+  }
 
   @override
-  List<Object> get props => [];
-}
+  List<Object> get props => [todos];
 
-final class TodoListInitial extends TodoListState {}
+  @override
+  bool get stringify => true;
+
+  TodoListState copyWith({
+    List<Todo>? todos,
+  }) {
+    return TodoListState(
+      todos: todos ?? this.todos,
+    );
+  }
+}
