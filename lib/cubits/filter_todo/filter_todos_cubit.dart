@@ -32,4 +32,40 @@ class FilterTodosCubit extends Cubit<FilterTodoState> {
     todoListSubscryption =
         todoListCubit.stream.listen((TodoListState todoListState) {});
   }
+  void setFilteredTodos() {
+    List<Todo> _filteredTodos;
+
+    switch (todoFilterCubit.state.filter) {
+      case Filter.active:
+        _filteredTodos = todoListCubit.state.todos
+            .where((Todo todo) => !todo.completed)
+            .toList();
+        break;
+      case Filter.completed:
+        _filteredTodos = todoListCubit.state.todos
+            .where((Todo todo) => todo.completed)
+            .toList();
+        break;
+      case Filter.all:
+      default:
+        _filteredTodos = todoListCubit.state.todos;
+        break;
+    }
+    if (todoSearchCubit.state.searchText.isNotEmpty) {
+      _filteredTodos = _filteredTodos
+          .where((Todo todo) => todo.description
+              .toLowerCase()
+              .contains(todoSearchCubit.state.searchText))
+          .toList();
+    }
+    emit(state.copyWith(filterTodos: _filteredTodos));
+  }
+
+  @override
+  Future<void> close() {
+    todoFilterSubscryption.cancel();
+    todoListSubscryption.cancel();
+    todoSearchSubscryption.cancel();
+    return super.close();
+  }
 }
