@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_cubit/cubits/todo_filter/todo_filter_cubit.dart';
 import 'package:todo_cubit/cubits/todo_search/todo_search_cubit.dart';
 import 'package:todo_cubit/models/todo_model.dart';
 
@@ -39,11 +40,25 @@ class SearchAndFilterTodo extends StatelessWidget {
 
   Widget filterButton(BuildContext context, Filter filter) {
     return TextButton(
-        onPressed: () {},
-        child: Text(filter == Filter.all
+      onPressed: () {
+        context.read<TodoFilterCubit>().changeFilter(filter);
+      },
+      child: Text(
+        filter == Filter.all
             ? 'All'
             : filter == Filter.active
                 ? 'Active'
-                : 'Completed'));
+                : 'Completed',
+        style: TextStyle(
+          fontSize: 16,
+          color: textColor(context, filter),
+        ),
+      ),
+    );
+  }
+
+  Color textColor(BuildContext context, Filter filter) {
+    final currentFilter = context.watch<TodoFilterCubit>().state.filter;
+    return currentFilter == filter ? Colors.blue : Colors.grey;
   }
 }
